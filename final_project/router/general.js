@@ -24,7 +24,7 @@ public_users.get('/isbn/:isbn',function (req, res) {
     let book = books[isbn]
 
     if (book) {
-        res.send(books[isbn])
+        res.send(JSON.stringify(books[isbn], null, 2))
     }
     else{
         res.send('This isbn doesnt correspond to a book in our system')
@@ -36,7 +36,19 @@ public_users.get('/isbn/:isbn',function (req, res) {
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
   //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+    let author = req.params.author
+    let foundBooks = []
+    for (let bookID in books){
+        if (books[bookID].author === author){
+            foundBooks.push(books[bookID])
+        }
+    }
+    if (foundBooks.length != 0){
+        res.send(JSON.stringify(foundBooks, null, 2))
+    }
+    else {
+        res.send("no books were found from that author")
+    }
 });
 
 // Get all books based on title
