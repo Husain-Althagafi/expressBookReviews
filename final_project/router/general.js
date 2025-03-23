@@ -73,7 +73,30 @@ public_users.get('/title/:title',function (req, res) {
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
   //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+    let isbn = req.params.isbn
+    let found = []
+    for (let id in books){
+        console.log(id + '-' + isbn)
+        if (id === isbn){
+            found.push(books[id])
+        }
+    }
+    console.log('the found list is ' + found.length)
+    if (found.length != 0){
+        let foundID = found[0]
+        if (foundID.review){
+            res.send("The reviews for the author are " + found[0].review)
+        }
+        else {
+            res.send('There are no reviews for this author')
+        }
+        
+    }
+    else{
+        res.send('no book with that id found')
+    }
+
+    
 });
 
 module.exports.general = public_users;
