@@ -3,30 +3,30 @@ let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
-
-
+public_users.use(express.json())
 public_users.post("/register", (req,res) => {
-  //Write your code here
-
-    let username = req.body.username
-    let password = req.body.password
-
-    if (username && password){
-        if (isValid(username)){
-            users.push({"username" : username, "password" : password})
-            res.send("User with username: " + username + "and password: " + password + " has been added!")
-        }
-        else {
-            res.send("invalid username and password")
-        }
-    }
-    else{
-        res.send('error with username and password')
-    }
-
-
-
-});
+    //Write your code here
+    
+      let username = req.body.username
+      let password = req.body.password
+      console.log(username + '+' + password)
+  
+      if (username && password){
+          if (isValid(username)){
+              users.push({"username" : username, "password" : password})
+              res.send("User with username: " + username + " and password: " + password + " has been added!")
+          }
+          else {
+              res.send("invalid username and password")
+          }
+      }
+      else{
+          res.send('error with username and password')
+      }
+  
+  
+  
+  });
 
 // Get the book list available in the shop
 public_users.get('/',function (req, res) {
@@ -103,10 +103,10 @@ public_users.get('/review/:isbn',function (req, res) {
     if (found.length != 0){
         let foundID = found[0]
         if (foundID.reviews){
-            res.send("The reviews for the author are " + JSON.stringify(found[0].reviews))
+            res.send("The reviews for this id are " + JSON.stringify(found[0].reviews))
         }
         else {
-            res.send('There are no reviews for this author')
+            res.send('There are no reviews for this id')
         }
         
     }
