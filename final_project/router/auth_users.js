@@ -66,22 +66,42 @@ regd_users.post("/login", (req,res) => {
 regd_users.put("/auth/review/:isbn", (req, res) => {
   //Write your code here
   let isbn = req.params.isbn
-  let username = req.session.username
+  let username = req.session.authorization.username
   let review = req.query.review
 
   if (!books[isbn]){
     return res.send('Author id doesnt exist')
   }
 
+  if (!review){
+    return res.send('no review has been sent')
+  }
   books[isbn].reviews[username] = review
   console.log(books[isbn].reviews)
   return res.send("Your review has been submitted")
 
 
-
-
-
 });
+
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+    let isbn = req.params.isbn
+    let username = req.session.authorization.username
+
+    if (!books[isbn]){
+        return res.send("this book id doesnt exist")
+    }
+    
+    if (books[isbn].reviews[username]){
+        delete books[isbn].reviews[username]
+        return res.send("Your review has been deleted for this book")
+    }
+    else{
+        return res.send("You have no reviews for this book")
+    }
+    
+
+})
+
 
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
