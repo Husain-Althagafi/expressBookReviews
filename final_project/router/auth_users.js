@@ -23,6 +23,16 @@ const isValid = (username)=>{ //returns boolean
 
 const authenticatedUser = (username,password)=>{ //returns boolean
 //write code to check if username and password match the one we have in records.
+let userswithsamename = users.filter((user) => {
+    return user.username === username
+  })
+
+  if (userswithsamename.length === 0 ) {
+    return true
+  }
+  else {
+    return false
+  }
 }
 
 //only registered users can login
@@ -35,7 +45,7 @@ regd_users.post("/login", (req,res) => {
     return res.status(404).json({message : "Error with logging in"})
   }
   
-  if (!authenticatedUser(username, password)){
+  if (authenticatedUser(username, password)){
     return res.status(404).json({message : "Invalid login, check credentials"})
   }
 
