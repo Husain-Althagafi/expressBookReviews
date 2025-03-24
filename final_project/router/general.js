@@ -85,7 +85,7 @@ public_users.get('/review/:isbn',function (req, res) {
     if (found.length != 0){
         let foundID = found[0]
         if (foundID.reviews){
-            res.send("The reviews for the author are " + found[0].reviews)
+            res.send("The reviews for the author are " + JSON.stringify(found[0].reviews))
         }
         else {
             res.send('There are no reviews for this author')
