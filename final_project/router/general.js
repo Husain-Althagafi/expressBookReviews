@@ -66,6 +66,14 @@ public_users.get('/isbn/:isbn', async function (req, res) {
             }
         }, 1000)
     })
+
+    booksByISBNPromise
+        .then(bookdata => {
+            res.send(bookdata)
+        })
+        .catch(error => {
+            res.send(error + "")
+        })
     
     
     // let isbn = req.params.isbn
@@ -83,40 +91,107 @@ public_users.get('/isbn/:isbn', async function (req, res) {
 });
   
 // Get book details based on author
-public_users.get('/author/:author',function (req, res) {
+public_users.get('/author/:author',async function (req, res) {
   //Write your code here
+
     let author = req.params.author
-    let foundBooks = []
-    for (let bookID in books){
-        if (books[bookID].author === author){
-            foundBooks.push(books[bookID])
-        }
-    }
-    if (foundBooks.length != 0){
+    const booksByAuthorPromise = new Promise((resolve, reject) => {
+        setTimeout(() =>{
+            let foundBooks = []
+            for (let bookID in books){
+                if (books[bookID].author === author){
+                    foundBooks.push(books[bookID])
+                }
+            }
+
+            if (foundBooks.length != 0){
+                resolve(foundBooks)
+            }
+            else {
+                reject(new Error("no books were found"))
+            }
+        }, 1000)
+    })
+
+    booksByAuthorPromise
+        .then(foundBooks => {
         res.send(JSON.stringify(foundBooks, null, 2))
-    }
-    else {
-        res.send("no books were found from that author")
-    }
+        })
+        .catch (error => {
+            res.send(error + '')
+        })
+
+
+
+
+
+
+    // let author = req.params.author
+    // let foundBooks = []
+    // for (let bookID in books){
+    //     if (books[bookID].author === author){
+    //         foundBooks.push(books[bookID])
+    //     }
+    // }
+    // if (foundBooks.length != 0){
+    //     res.send(JSON.stringify(foundBooks, null, 2))
+    // }
+    // else {
+    //     res.send("no books were found from that author")
+    // }
 });
 
 // Get all books based on title
-public_users.get('/title/:title',function (req, res) {
+public_users.get('/title/:title', async function (req, res) {
   //Write your code here
-  let title = req.params.title
-  let foundBooks = []
-  for (let bookID in books){
-    let titleList = books[bookID].title.split(', ')
-      if (titleList.includes(title)){
-          foundBooks.push(books[bookID])
-      }
-  }
-  if (foundBooks.length != 0){
-      res.send(JSON.stringify(foundBooks, null, 2))
-  }
-  else {
-      res.send("no books were found with that name")
-  }
+
+    let title = req.params.title
+    const booksByTitlePromise = new Promise((resolve, reject) => {
+        setTimeout(() => {
+            let foundBooks = []
+            for (let bookID in books){
+                if (title === books[bookID].title){
+                    foundBooks.push(books[bookID])
+                }
+            }
+
+            if (foundBooks.length != 0){
+                resolve(foundBooks)
+            }
+            else {
+                reject(new Error('No books found matching the title'))
+            }
+        }, 1000)
+    })
+
+    booksByTitlePromise
+        .then(booksdata =>{
+            res.send(JSON.stringify(booksdata, null, 2))
+        })
+        .catch(error =>{
+            res.send(error +'')
+        })
+
+
+
+
+
+
+
+//   let title = req.params.title
+//   let foundBooks = []
+//   for (let bookID in books){
+//     let titleList = books[bookID].title.split(', ')
+//       if (titleList.includes(title)){
+//           foundBooks.push(books[bookID])
+//       }
+//   }
+//   if (foundBooks.length != 0){
+//       res.send(JSON.stringify(foundBooks, null, 2))
+//   }
+//   else {
+//       res.send("no books were found with that name")
+//   }
 });
 
 //  Get book review
