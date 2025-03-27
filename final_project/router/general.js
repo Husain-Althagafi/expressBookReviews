@@ -1,7 +1,8 @@
 const express = require('express');
-let books = require("./booksdb.js");
-let isValid = require("./auth_users.js").isValid;
-let users = require("./auth_users.js").users;
+const books = require("./booksdb.js");
+const isValid = require("./auth_users.js").isValid;
+const users = require("./auth_users.js").users;
+const axios = require('axios')
 const public_users = express.Router();
 public_users.use(express.json())
 public_users.post("/register", (req,res) => {
@@ -28,25 +29,55 @@ public_users.post("/register", (req,res) => {
   
   });
 
+
+
 // Get the book list available in the shop
-public_users.get('/',function (req, res) {
+public_users.get('/', async function (req, res) {
   //Write your code here
-  res.send(JSON.stringify(books, null, 2)); // 2 spaces for indentation
+    const fetchBooksPromise =  new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve(books)
+        }, 1000)
+    })
+
+    fetchBooksPromise
+        .then(booksdata => {
+            res.send(JSON.stringify(booksdata, null, 2))
+        })
+        .catch (error => {
+            res.status(500).json('error getting book data')
+        })
+
 });
 
 // Get book details based on ISBN
-public_users.get('/isbn/:isbn',function (req, res) {
+public_users.get('/isbn/:isbn', async function (req, res) {
   //Write your code here
     let isbn = req.params.isbn
+    
+    const booksByISBNPromise =  new Promise((resolve, reject) => {
+        setTimeout(() => {
+            const book = books[isbn]
+            if (book) {
+                resolve(book)
+            }
+            else {
+                reject(new Error('book not found'))
+            }
+        }, 1000)
+    })
+    
+    
+    // let isbn = req.params.isbn
 
-    let book = books[isbn]
+    // let book = books[isbn]
 
-    if (book) {
-        res.send(JSON.stringify(books[isbn], null, 2))
-    }
-    else{
-        res.send('This isbn doesnt correspond to a book in our system')
-    }
+    // if (book) {
+    //     res.send(JSON.stringify(books[isbn], null, 2))
+    // }
+    // else{
+    //     res.send('This isbn doesnt correspond to a book in our system')
+    // }
 
 
 });
